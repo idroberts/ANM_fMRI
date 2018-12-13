@@ -1,0 +1,6 @@
+# ignore versions of the task created before creating a github repository
+preGithubVersions/
+
+# ignore data folders
+data/
+edfData/
