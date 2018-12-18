@@ -23,7 +23,7 @@ import questionnaires as qs
 
 # general experiment settings
 expName = 'ANM1_preScanner'  # experiment name
-expVersion = 3.0  # experiment version
+expVersion = 2.5  # experiment version
 DEBUG = False  # set debug mode (if True: not fullscreen and subject number is 9999)
 monitor = 'testMonitor'  # display name
 overallTrialNum = 0  # initialize overall trial number to be 0
@@ -1291,19 +1291,21 @@ gf.show_instructs(win=win, text=["You may remove your hand from the ice water."]
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs0_.png"), units='pix')
 coldPressorQs(win=win, saveFile=os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'coldPressorQs'), subjNum=expInfo['subject'])
 
+gf.show_instructs(win=win, text=["You have completed the ice task.\n\nPlease wait patiently. Do NOT continue until the experimenter tells you to do so."],
+   timeAutoAdvance=0, timeRequired=0, secretKey=['p'], units='pix')
+
 # initial instructions
 gf.show_instructs(win=win,
-    text=['You have completed the ice task.\n\nPlease continue to receive instructions for the next part of the experiment.',
-    'In today\'s experiment, you will complete tasks with other participants.\n\nThe other participants are people who, like you, are enrolled in this study. They visited the lab on a previous day and completed the same tasks that you are. The computer will randomly pair you with a few of these other participants today.',
-    'The goal of the first part of the study is to examine how people make decisions with others.',
-    'Depending on your choices during the task, you will have the opportunity to earn money. You will be paid in cash at the end of the experiment.',
-    'For each trial in the following task, you will be paired with a different partner. All of your partners are other participants in this study.\n\nYour choices will influence how much money you and your partners earn.',
+    text=['In today\'s experiment, you will complete tasks with other participants.\n\nThe goal of the first part of the study is to examine how people make decisions with others.',
+    'Depending on your choices during the tasks, you will have the opportunity to earn money. You will be paid in cash at the end of the experiment.',
+    'For this task, you will be paired with other participants. Your choices will influence how much money you and your partners earn.',
     'Because your decisions can have a big impact on your partners\' payoffs, think carefully about your partners throughout the experiment.',
-    'In the next sections, we will describe precisely the instructions for the first task you will be completing. Pay attention to these instructions. It is critical that you understand the instructions in order to complete the task.'],
+    'In the next sections, we will describe precisely the instructions for the first task you will be completing. Pay attention to these instructions. It is critical that you understand the instructions in order to complete the task.',
+    'For each trial in the following task, you will be paired with a different partner. Your partners will be other participants.'],
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs1a_.png"), units='pix')
 
 gf.show_instructs(win=win,
-    text=['On each trial, both you and your partner start with 10 points.\n\nEach of you decide how many of your points you would like to send to the other.'],
+    text=['On each trial, both you and your partner will start with 10 points.\n\nEach of you will decide how many of your points you would like to send to the other.'],
     timeAutoAdvance=0, timeRequired=0, textPos=(0,300), advanceKey=['space'], image=os.path.join(os.getcwd(), 'taskInstructs', 'pdInstructs_1.png'),
     imageDim=(900,450), imagePos=(0, -100),
     saveFile=os.path.join(saveDir, "instructs1b_.png"), units='pix')
@@ -1346,7 +1348,7 @@ gf.show_instructs(win=win,
 
 gf.show_instructs(win=win,
     text=['The computer will randomly assign you to either decide first or second for all of your decisions.\n\nIf you are selected to decide first, your decision will be given to another participant later.',
-    'If you are selected to decide second, you will receive the decisions that have been made a few other participants and be asked to make your decisions as the second partner.',
+    'If you are selected to decide second, you will receive the decisions of a few other participants and be asked to make your decisions as the second partner.',
     'One of your decisions from a task in today\'s experiment will be randomly selected to count for real money. Treat every trial as if it could be the one and only trial that determines how much you and your partner receive.',
     'The decisions made by you and your partner will be completely anonymous. Neither of you will receive any identifying information about the other. The only information that either partner will receive is how many points were sent by the other partner.',
     'Your decisions may be shown to other participants besides your partner, but again your decisions will be completely anonymous. The other participants will simply be asked to observe and rate the decisions being made.',
@@ -1365,7 +1367,8 @@ gf.show_instructs(win=win,
 prisonersDilemma(saveFile=os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'prisonersDilemma'))
 
 gf.show_instructs(win=win,
-    text=['You have completed the task.\n\nIn addition to studying people\'s decisions, we are also interested in understanding how people perceive the decisions of others. Therefore, we are now going to have you rate the decisions made by some of the other participants.\n\nThe participants whose decisions you will see will be randomly selected from other participants in the study.'],
+    text=['You have completed the task.\n\nIn addition to studying people\'s decisions, we are also interested in understanding how people perceive the decisions of others. Therefore, we are now going to have you rate the decisions made by two other participants.',
+    'Right now, in the other rooms, there are other participants completing the same experiment as you. You will see the decisions that were made by two of these other participants. The participants whose decisions you will see will be randomly selected.'],
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs3_.png"), units='pix')
 
 # Present partner cues
@@ -1385,7 +1388,7 @@ neuShape.setAutoDraw(True)
 negShape.setAutoDraw(True)
 
 gf.show_instructs(win=win,
-   text=["For today's experiment, the other participants who you are now being paired with will be represented to you by colorful shapes. This way all your interactions will be kept anonymous.\n\nHere are the shapes that will be used to represent each of the other participants:"],
+   text=["For today's experiment, the other participants in your session will be represented to you by colorful shapes. This way all your interactions will be kept anonymous.\n\nHere are the shapes that will be used to represent each of the other participants:"],
    timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs4_.png"), units='pix')
 
 posShape.setAutoDraw(False)
@@ -1394,15 +1397,24 @@ negShape.setAutoDraw(False)
 
 gf.show_instructs(win=win,
     text=['Pay careful attention to the information that you receive about each of the other participants because you will soon be asked to provide ratings about them.',
-    'You will now be presented with the decisions of two of the other participants.'],
+    'You now will need to wait until all the other participants have completed their decisions. Continue to the next screen to wait until each participant is ready. When each participant is ready, the box next to their symbol will turn green.'],
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs5_.png"), units='pix')
+
+# loading screen
+labelPositions = [(-70,150), (-70,0), (-70,-300)]
+random.shuffle(labelPositions)
+wait_for_others(totalWait=1500, p1delay=0, p2delay=900, p4delay=1400)
+
+gf.show_instructs(win=win,
+    text=['All the other participants have completed their decisions. You will now be presented with the decisions of two of the other participants.'],
+    timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs6_.png"), units='pix')
 
 prisoners_dilemma_feedback()
 
 prisonersDilemma_guesses(saveFile=os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'prisonersDilemmaGuesses'))
 
 gf.show_instructs(win=win,
-    text=['In addition to viewing the decisions of some of the other participants, we are also going to present you with information about these other participants\' tolerance for cold based on the ice task you completed earlier. Like you, the participants who you have been paired with also had to hold their hands in ice water.\n\nOn the next screen, you will see how painful each of the other three participants rated the ice water on a scale of 1 (not at all) to 7 (extremely).'],
+    text=['In addition to viewing the decisions of some of the other participants, we are also going to present you with information about the other participants\' tolerance for cold based on the ice task you all completed earlier.\n\nOn the next screen, you will see how painful each of the other three participants in your current session rated the ice water on a scale of 1 (not at all) to 7 (extremely).'],
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs7_.png"), units='pix')
 
 partner_pain_feedback()
@@ -1431,11 +1443,11 @@ gf.show_instructs(win=win,
     text=["You have completed the numerical intuition task.",
     "You will now receive instructions for the task that you will be completing in the fMRI scanner.",
     "For this task, we are interested in understanding how people make decisions about outcomes that affect not only themselves, but also other people. Depending on your choices during the task, you will have the opportunity to earn from $0 up to $40. You will be paid in cash at the end of the experiment.",
-    "The same participants who you were paired with before will also be your partners for this task.\n\nDepending on your choices, you might end up causing one of them to end up with $0 up to $40.",
+    "In the other rooms, there are other people participating. They will be your partners. Depending on your choices, you might end up causing one of them to end up with $0 up to $40.",
     "The decision you make can have a large impact on the other participant's payoffs. Like you, they signed up for this experiment. Since your decisions can have a big impact on their payoffs, think carefully about your partners throughout the experiment.",
-    "Additionally, one of your partners may have to hold a hand in the ice water again during their next visit to the lab. We will describe this soon.",
+    "Additionally, one of your partners may have to hold a hand in the ice water again. We will describe this soon.",
     "In the next sections, we will describe precisely the instructions for the task you will be completing. Pay attention to these instructions. It is critical that you understand the instructions, since they affect your ability to make good decisions -- and potentially more money!",
-    "In this task, you will be deciding how to allocate money between yourself and a partner.\n\nYou will always be partnered with one of the other participants you were paired with previously. The same anonymous symbol will be used to indicate the same person as before.\n\nThink about this person as you make your decisions."],
+    "In this task, you will be deciding how to allocate money between yourself and a partner.\n\nYou will always be partnered with one of the other participants in your current session. The same anonymous symbol will be used to indicate the same person as before.\n\nThink about this person as you make your decisions."],
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], saveFile=os.path.join(saveDir, "instructs10a_.png"), units='pix')
 
 gf.show_instructs(win=win,
@@ -1474,8 +1486,8 @@ gf.show_instructs(win=win,
 
 gf.show_instructs(win=win,
     text=["There is another element to this task. On each trial before you see the proposal, you will first see a percentage, such as 78%.",
-    "This percentage indicates the likelihood that your partner will be required to hold a hand in the ice water again on their next visit to the lab. For example, if the percentage was 78%, this would mean there is a 78% chance your partner will have to hold a hand in the ice water again (and a 22% chance that they will not).",
-    "Your partner will have the opportunity to spend some of the money you gave them on that trial to reduce their chances of having to hold a hand in ice water again, if they wish.",
+    "This percentage indicates the likelihood that your partner will be required to hold a hand in the ice water again at the end of the experiment. For example, if the percentage was 78%, this would mean there is a 78% chance your partner will have to hold a hand in the ice water again (and a 22% chance that they will not).",
+    "At the end of the experiment, your partner will have the opportunity to spend some of the money you gave them on that trial to reduce their chances of having to hold a hand in ice water again, if they wish.",
     "Each dollar your partner spends will reduce their chances of having to hold a hand in ice water again by 10%.\n\nAny money that they spend will be returned to the experimenter. They will keep any money that they don't spend as their final payment.",
     "For example, if they have an 78% chance of having to holding their hand in ice water and choose to spend $7 out of $20, their chances would be reduced to 8% (-10% for each $1 spent) and they would keep $13 ($7 less than the $20 you gave them).",
     "After they've made their choice, the computer will conduct a random lottery using the final probability to determine if your partner will have to hold a hand in ice water again.",
@@ -1499,7 +1511,7 @@ gf.show_instructs(win=win,
     saveFile=os.path.join(saveDir, "instructs12g_.png"), units='pix')
 
 gf.show_instructs(win=win,
-    text=["How do your choices on each trial translate into a payment at the end?\n\nAt the end of the experiment, we will randomly randomly select ONE trial from among all the decisions you made for one randomly selected partner. The results of this trial will count for real money.\n\nThe likelihood of your partner having to hold a hand in the ice water will also be determined by this trial.",
+    text=["How do your choices on each trial translate into a payment at the end?\n\nAt the end of the experiment, we will randomly pair you with another participant and randomly select ONE trial from among all the decisions you made for that partner. The results of this trial will count for real money.\n\nThe likelihood of your partner having to hold a hand in the ice water will also be determined by this trial.",
     "Therefore, you should treat every trial when it appears as if it could be the one and only trial that finally determines how much you and your partner receive at the end of the experiment.",
     "You will now have some practice trials. These trials will not count for anything, but are just to give you a sense for the timing and feel of the task."],
     timeAutoAdvance=0, timeRequired=0, advanceKey=['space'], wrapWidth=1200, saveFile=os.path.join(saveDir, "instructs12h_.png"), textPos=(0,100), units='pix')

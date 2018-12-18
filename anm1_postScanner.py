@@ -22,7 +22,7 @@ import questionnaires as qs
 
 # general experiment settings
 expName = 'ANM1_postScanner'  # experiment name
-expVersion = 2.0  # experiment version
+expVersion = 1.5  # experiment version
 DEBUG = False  # set debug mode (if True: not fullscreen and subject number is 9999)
 monitor = 'testMonitor'  # display name
 overallTrialNum = 0  # initialize overall trial number to be 0
@@ -194,7 +194,7 @@ def partnerTaskQuestions(win=None, saveFile=None, partner=None, endPause=1.0):
         boxes[j].setAutoDraw(True)
         respLabels[j].setAutoDraw(True)
     qText = visual.TextStim(win=win, text="", pos=(0,80), height=40, wrapWidth=1000, units='pix')
-    qText.setText("If given $20 with an 80% chance of having to hold a hand in ice water again, how much do you think this partner will spend to reduce the chances of ice water?\n\n(Use the mouse to respond)")
+    qText.setText("If given $20 with an 80% chance of having to hold a hand in ice water again, how much do you think this partner would spend to reduce the chances of ice water?\n\n(Use the mouse to respond)")
     qText.setAutoDraw(True)
     resp = None
     win.callOnFlip(mouse.clickReset)
@@ -363,9 +363,9 @@ def deceptionQs(win=None, saveFile=None, scaleName="deceptionQs", subjNum=0, end
 
     # run scale
     results = qs.run_scale_items(win=win,
-    scaleItems=["Did you believe that your partners are actual people?",
-    "Did you believe that you and your partners will be paid according to your choices?",
-    "Did you believe that your partner faces the risk of having to holding a hand in the ice water again?",
+    scaleItems=["Did you believe that your partners were actual people?",
+    "Did you believe that you and your partners would be paid according to your choices?",
+    "Did you believe that your partner faced the risk of having to holding a hand in the ice water again after the experiment?",
     "Did you believe that you were seeing your partner's real choices at the beginning of the experiment?"],
     respScale=respOptions, respKeys=respKeys, scaleName=scaleName, subjNum=subjNum)
 
