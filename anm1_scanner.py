@@ -36,7 +36,7 @@ class EyeLinkNoOutput(pylink.EyeLink):
 # general experiment settings
 expName = 'ANM1_scanner'  # experiment name
 edfName = 'ANM'
-expVersion = 2.4  # experiment version
+expVersion = 2.5  # experiment version
 DEBUG = False  # set debug mode (if True: not fullscreen and subject number is 9999)
 dummyMode = False  # whether to run eye tracker in dummy mode (don't collect) or not
 dispMonitor = 'testMonitor'  # display name
@@ -66,17 +66,49 @@ if DEBUG:
 elif not DEBUG:
     fullscreen = True
 
+
 # present dialogue box for subject info
-expInfo = gf.subject_info(entries=['subject', 'fileNumber', 'saveFile'], debug=DEBUG,
-                          debugValues=[999, 1, ''], expName=expName, expVersion=expVersion,
+expInfo = gf.subject_info(entries=['subject', 'fileNumber', 'runNumber', 'saveFile'], debug=DEBUG,
+                          debugValues=[999, 1, 1, ''], expName=expName, expVersion=expVersion,
                           counterbalance=nCondCombos)
 
 if expInfo['fileNumber'] is None or expInfo['fileNumber'] == '':
     expInfo['fileNumber'] = 1
+
+if expInfo['runNumber'] is None or expInfo['runNumber'] == '':
+    expInfo['runNumber'] = 1
+elif 0 < int(expInfo['runNumber']) < 6:
+    expInfo['runNumber'] = int(expInfo['runNumber'])
+else:
+    raise Exception('The run number must be between 1 and 5. The number entered was: %d' %(int(expInfo['runNumber'])))
+    win.close()
+    core.quit()
 # elif expInfo['fileNumber'] < 1 or 9 < expInfo['fileNumber']:
 #     raise Exception('File number must be between 1 and 9, inclusive.')
 #     win.close()
 #     core.quit()
+
+saveDir = os.path.join(os.getcwd(), 'data', 'subject_' + str(expInfo['subject']))
+if not os.path.exists(saveDir):
+    os.makedirs(saveDir)
+
+if expInfo['saveFile'] is None or expInfo['saveFile'] == '':
+    saveFilename = os.path.join(saveDir, "%04d_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'])
+    saveFilename_practice = os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'practice')
+    # lastRunNumber = 0
+else:
+    if expInfo['saveFile'][-4:] == '.csv':
+        saveFilename = os.path.join(saveDir, expInfo['saveFile'])
+    elif '.' not in expInfo['saveFile'][-4:]:
+        saveFilename = os.path.join(saveDir, expInfo['saveFile'] + '.csv')
+    else:
+        raise Exception("Looks like you've entered the wrong file: saveFile should be a .csv. You entered: %s" %(expInfo['saveFile']))
+        win.close()
+        core.quit()
+
+    saveFilename_practice = os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'practice')
+    # prevData = pd.read_csv(saveFilename)
+    # lastRunNumber = max(prevData['runNumber'])
 
 
 ###### SETUP EYELINK ######
@@ -202,26 +234,12 @@ currRefreshRate = runTimeTest['windowRefreshTimeAvg_ms'] / 1000
 print currRefreshRate
 
 
-saveDir = os.path.join(os.getcwd(), 'data', 'subject_' + str(expInfo['subject']))
-if not os.path.exists(saveDir):
-    os.makedirs(saveDir)
-
 payFile = os.path.join(os.getcwd(), 'data', 'payFile.csv')
 dgQuizFile = os.path.join(os.getcwd(), 'stim', 'anm1_dgQuiz.csv')
 pdQuizFile = os.path.join(os.getcwd(), 'stim', 'anm1_pdQuiz.csv')
 
 
 # generate names for data and session log files
-if expInfo['saveFile'] is None or expInfo['saveFile'] == '':
-    saveFilename = os.path.join(saveDir, "%04d_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'])
-    saveFilename_practice = os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'practice')
-    lastRunNumber = 0
-else:
-    saveFilename = os.path.join(saveDir, expInfo['saveFile'])
-    saveFilename_practice = os.path.join(saveDir, "%04d_%s_%s_%s.csv") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'], 'practice')
-    prevData = pd.read_csv(saveFilename)
-    lastRunNumber = max(prevData['runNumber'])
-
 payInfo = os.path.join(saveDir, "%04d_payInfo.txt") %(int(expInfo['subject']))
 logFilename = os.path.join(saveDir, "%04d_%s_%s.log") %(int(expInfo['subject']), expInfo['startTime'], expInfo['expName'])
 logfile = logging.LogFile(logFilename, filemode = 'w', level = logging.EXP) #set logging information (core.quit() is required at the end of experiment to store logging info!!!)
@@ -558,12 +576,16 @@ def run_decision_run(trialsDf=None, saveFile=None):
     preparingScannerText.setAutoDraw(False)
 
     # Assign runNumber based on existing csv file. Read the csv file and find the largest block number and add 1 to it to reflect this block's number.
-    try:
-        runNumber = max(pd.read_csv(saveFile)['runNumber']) + 1
-        trialsDf['runNumber'] = runNumber
-    except:  # if fail to read csv, then it's block 1
-        runNumber = 1
-        trialsDf['runNumber'] = runNumber
+    # try:
+    #     runNumber = max(pd.read_csv(saveFile)['runNumber']) + 1
+    #     trialsDf['runNumber'] = runNumber
+    # except:  # if fail to read csv, then it's block 1
+    #     runNumber = 1
+    #     trialsDf['runNumber'] = runNumber
+
+    # Assign runNumber
+    runNumber = expInfo['runNumber']
+    trialsDf['runNumber'] = runNumber
 
     # start eye tracker recording
     error = tk.startRecording(1,1,1,1)
@@ -759,6 +781,14 @@ def run_decision_run(trialsDf=None, saveFile=None):
                         # close the graphics
                         pylink.closeGraphics()
 
+                        v = 1
+                        abortFile = os.path.join(saveDir, "%04d_abortRun%d_%d.csv") %(int(expInfo['subject']), runNumber, v)
+                        while os.path.isfile(abortFile):
+                            v += 1
+                            abortFile = os.path.join(saveDir, "%04d_abortRun%d_%d.csv") %(int(expInfo['subject']), runNumber, v)
+                        
+                        trialsDf.to_csv(abortFile, header = True, mode = 'a', index = False)
+
                         win.close()
                         core.quit()
 
@@ -910,7 +940,7 @@ runs = generate_runs(posBlocks=posBlocks, neuBlocks=neuBlocks, negBlocks=negBloc
 initial_scans()
 
 # run practice if haven't done any runs yet
-if lastRunNumber == 0:
+if expInfo['runNumber'] < 2:
     # review task instructions
     gf.show_instructs(win=win,
         text=["Before beginning the actual task, you're going to complete one block of practice trials so that you can get familiar with how the task will go in the scanner.\n\nWe'll quickly review the task before starting."],
@@ -952,23 +982,23 @@ if lastRunNumber == 0:
 # runs[1] = runs[1].loc[range(3),:]
 # runs[2] = runs[2].loc[range(3),:]
 
-if lastRunNumber < 1:
+if expInfo['runNumber'] < 2:
     overallTrialNum = 0
     run_decision_run(trialsDf=runs[0], saveFile=saveFilename)
 
-if lastRunNumber < 2:
+if expInfo['runNumber'] < 3:
     overallTrialNum = 60
     run_decision_run(trialsDf=runs[1], saveFile=saveFilename)
 
-if lastRunNumber < 3:
+if expInfo['runNumber'] < 4:
     overallTrialNum = 120
     run_decision_run(trialsDf=runs[2], saveFile=saveFilename)
 
-if lastRunNumber < 4:
+if expInfo['runNumber'] < 5:
     overallTrialNum = 180
     run_decision_run(trialsDf=runs[3], saveFile=saveFilename)
 
-if lastRunNumber < 5:
+if expInfo['runNumber'] < 6:
     overallTrialNum = 240
     run_decision_run(trialsDf=runs[4], saveFile=saveFilename)
 
