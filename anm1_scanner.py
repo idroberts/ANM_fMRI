@@ -69,18 +69,18 @@ elif not DEBUG:
 
 # present dialogue box for subject info
 expInfo = gf.subject_info(entries=['subject', 'fileNumber', 'runNumber', 'saveFile'], debug=DEBUG,
-                          debugValues=[999, 1, 1, ''], expName=expName, expVersion=expVersion,
+                          debugValues=[999, 1, 0, ''], expName=expName, expVersion=expVersion,
                           counterbalance=nCondCombos)
 
 if expInfo['fileNumber'] is None or expInfo['fileNumber'] == '':
     expInfo['fileNumber'] = 1
 
 if expInfo['runNumber'] is None or expInfo['runNumber'] == '':
-    expInfo['runNumber'] = 1
-elif 0 < int(expInfo['runNumber']) < 6:
+    expInfo['runNumber'] = 0
+elif 0 <= int(expInfo['runNumber']) < 6:
     expInfo['runNumber'] = int(expInfo['runNumber'])
 else:
-    raise Exception('The run number must be between 1 and 5. The number entered was: %d' %(int(expInfo['runNumber'])))
+    raise Exception('The run number must be between 0 and 5. The number entered was: %d' %(int(expInfo['runNumber'])))
     win.close()
     core.quit()
 # elif expInfo['fileNumber'] < 1 or 9 < expInfo['fileNumber']:
@@ -940,7 +940,7 @@ runs = generate_runs(posBlocks=posBlocks, neuBlocks=neuBlocks, negBlocks=negBloc
 initial_scans()
 
 # run practice if haven't done any runs yet
-if expInfo['runNumber'] < 2:
+if expInfo['runNumber'] < 1:
     # review task instructions
     gf.show_instructs(win=win,
         text=["Before beginning the actual task, you're going to complete one block of practice trials so that you can get familiar with how the task will go in the scanner.\n\nWe'll quickly review the task before starting."],
